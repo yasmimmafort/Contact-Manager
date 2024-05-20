@@ -169,7 +169,7 @@ def update_contact(conn, contact_id, fields):
 
 - `sql = f"UPDATE contacts SET {set_clause} WHERE id = ?"`: Cria o comando SQL de atualização usando a cláusula `SET` gerada e adiciona uma cláusula `WHERE` para especificar qual contato deve ser atualizado pelo seu `id`.
 
-- `cur = conn.cursor()`: Cria um cursor a partir da conexão fornecida (`con`n). O cursor é utilizado para executar comandos SQL no banco de dados.
+- `cur = conn.cursor()`: Cria um cursor a partir da conexão fornecida (`conn`). O cursor é utilizado para executar comandos SQL no banco de dados.
 
 - `cur.execute(sql, list(fields.values()) + [contact_id])`: Executa o comando SQL de atualização, passando os novos valores dos campos e o `id` do contato a ser atualizado como parâmetros.
 
@@ -193,10 +193,189 @@ Este exemplo atualiza o contato com `id` 1, modificando seu nome, e-mail, telefo
 
 A função `update_contact` é essencial para permitir a edição de informações de contatos já existentes no banco de dados do Contact Manager, proporcionando flexibilidade na manutenção dos dados.
 
+### `delete_contact(conn, id)`
+
+A função delete_contact é responsável por excluir um contato específico da tabela contacts no banco de dados SQLite. Ela remove o registro correspondente ao id fornecido.
 
 
+```python
+def delete_contact(conn, id):
+    sql = 'DELETE FROM contacts WHERE id=?'
+    cur = conn.cursor()
+    cur.execute(sql, (id,))
+    conn.commit()
+```
+### Explicação
 
+- `sql = 'DELETE FROM contacts WHERE id=?'`: Define o comando SQL para excluir um registro da tabela `contacts` com base no `id` fornecido. O `?` é um placeholder para o valor do `id` que será substituído durante a execução do comando.
 
+- `cur = conn.cursor()`: Cria um cursor a partir da conexão fornecida (`conn`). O cursor é utilizado para executar comandos SQL no banco de dados.
 
+- `cur.execute(sql, (id,))`: Executa o comando SQL de exclusão, passando o valor do `id` como parâmetro. É importante notar que o valor do `id` é passado como uma tupla (`id`,), conforme necessário pela função execute.
+
+- `conn.commit()`: Salva (ou "commita") as mudanças feitas no banco de dados. Este passo é necessário para garantir que a exclusão do registro seja efetivada.
+
+### Exemplo de Uso
+
+```python
+contact_id = 1
+delete_contact(conn, contact_id)
+print(f"Contato com ID {contact_id} foi excluído.")
+```
+Este exemplo exclui o contato com o `id` 1 da tabela `contacts`. Após a execução da função `delete_contact`, o contato correspondente será removido do banco de dados.
+
+A função `delete_contact` é crucial para permitir a remoção de contatos indesejados ou obsoletos do banco de dados do Contact Manager, ajudando a manter a integridade e a organização dos dados.
+
+### `is_valid_email(email)`
+
+A função `is_valid_email` verifica se um determinado e-mail possui um formato válido, seguindo um padrão específico. Ela utiliza expressões regulares para validar o formato do e-mail.
+
+```python
+def is_valid_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email)
+```
+### Explicação 
+
+- `pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'`: Define um padrão de expressão regular que corresponde a um endereço de e-mail válido. Este padrão verifica se o e-mail contém uma parte local seguida por `@`, seguida por um domínio, e se o domínio possui uma extensão válida.
+
+- `re.match(pattern, email)`: Utiliza a função match do módulo re para verificar se o e-mail fornecido corresponde ao padrão definido. Se corresponder, a função retorna um objeto correspondente, indicando que o e-mail é válido. Caso contrário, retorna None, indicando que o e-mail não é válido.
+
+### Exemplo de Uso
+
+```python
+email = "example@example.com"
+if is_valid_email(email):
+    print("O e-mail é válido.")
+else:
+    print("O e-mail é inválido.")
+```
+Este exemplo verifica se o e-mail `"example@example.com"` é válido usando a função `is_valid_email` e imprime uma mensagem correspondente.
+
+A função `is_valid_email` é útil para validar endereços de e-mail fornecidos pelo usuário antes de serem inseridos no banco de dados do Contact Manager, ajudando a garantir a integridade e a validade dos dados.
+
+### `is_valid_phone(phone)`
+
+A função `is_valid_phone` verifica se um determinado número de telefone possui um formato válido, seguindo um padrão específico. Ela utiliza expressões regulares para validar o formato do número de telefone.
+
+### Explicação
+
+- `pattern = r'^[\d\+\-\(\) ]+$'`: Define um padrão de expressão regular que corresponde a um número de telefone válido. Este padrão verifica se o número de telefone contém apenas dígitos (`\d`), sinais de adição (`+`), traços (`-`), parênteses (`(` e `)`) e espaços (` `).
+
+- `re.match(pattern, phone)`: Utiliza a função `match` do módulo `re` para verificar se o número de telefone fornecido corresponde ao padrão definido. Se corresponder, a função retorna um objeto correspondente, indicando que o número de telefone é válido. Caso contrário, retorna `None`, indicando que o número de telefone não é válido.
+
+### Exemplo de Uso 
+
+```python
+phone = "+1234567890"
+if is_valid_phone(phone):
+    print("O número de telefone é válido.")
+else:
+    print("O número de telefone é inválido.")
+```
+
+Este exemplo verifica se o número de telefone `"+1234567890"` é válido usando a função `is_valid_phone` e imprime uma mensagem correspondente.
+
+A função `is_valid_phone` é útil para validar números de telefone fornecidos pelo usuário antes de serem inseridos no banco de dados do Contact Manager, ajudando a garantir a integridade e a validade dos dados.
+
+### `import_from_csv(filename)`
+
+A função `import_from_csv` permite importar dados de um arquivo CSV para o banco de dados SQLite do Contact Manager. Ela lê o arquivo CSV fornecido, valida os dados de cada linha e os insere na tabela contacts do banco de dados.
+
+```python
+def import_from_csv(filename):
+    conn = create_connection()
+    create_table(conn)
+    try:
+        with open(filename, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                name = row['Name']
+                if ' ' not in name:
+                    print(f"Nome inválido (sem sobrenome): {name}, pulando...")
+                    continue
+                email = row['Email']
+                phone = row['Phone']
+                address = row['Address']
+                if not (name and email and phone and address):
+                    print(f"Dados incompletos para {name}, pulando...")
+                    continue
+                if not is_valid_email(email):
+                    print(f"Email inválido: {email}, pulando...")
+                    continue
+                if not is_valid_phone(phone):
+                    print(f"Telefone inválido: {phone}, pulando...")
+                    continue
+                contact = (name, email, phone, address)
+                add_contact(conn, contact)
+    except FileNotFoundError:
+        print(f"O arquivo {filename} não foi encontrado.")
+    conn.close()
+```
+### Exlplicação
+
+- 'conn = create_connection()': Cria uma conexão com o banco de dados SQLite utilizando a função 'create_connection'. Esta conexão será usada para inserir os dados do arquivo CSV no banco de dados.
+
+- `create_table(conn)`: Garante que a tabela `contacts` esteja criada no banco de dados. Se a tabela já existir, essa função não terá efeito. Se não existir, ela será criada.
+
+- `with open(filename, mode='r') as file:`: Abre o arquivo CSV fornecido em modo de leitura (`'r'`) utilizando um contexto de arquivo. Isso garante que o arquivo seja fechado automaticamente após o término do bloco de código, mesmo em caso de erro.
+
+- `csv_reader = csv.DictReader(file)`: Cria um leitor de CSV que trata cada linha como um dicionário, onde as chaves são os cabeçalhos das colunas e os valores são os dados correspondentes.
+
+- O loop `for row in csv_reader:` itera sobre cada linha do arquivo CSV.
+
+- `name = row['Name']`, `email = row['Email']`, `phone = row['Phone']`, `address = row['Address']`: Extrai os valores de cada coluna do dicionário para as variáveis correspondentes.
+
+- As verificações `if ' ' not in name`, `if not (name and email and phone and address)`, `if not is_valid_email(email)`, `if not is_valid_phone(phone)`: Validam os dados de cada linha do CSV. Se os dados não atenderem aos critérios especificados, a linha será pulada e uma mensagem de aviso será pulada e uma mensagem de aviso será exibida.
+
+- `contact = (name, email, phone, address)`: Cria uma tupla contendo os dados do contato para serem adicionados ao banco de dados.
+
+- `add_contact(conn, contact)`: Chama a função `add_contact` para adicionar o contato ao banco de dados.
+
+- `except FileNotFoundError:`: Captura a exceção caso o arquivo CSV não seja encontrado e exibe uma mensagem de aviso.
+
+- `conn.close()`: Fecha a conexão com o banco de dados após a conclusão da importação.
+
+  ### Exemplo de Uso
+
+```python
+import_from_csv('contatos.csv')
+```
+
+Este exemplo importa dados do arquivo CSV `'contatos.csv'` para o banco de dados do Contact Manager.
+
+A função `import_from_csv` é fundamental para permitir a importação de grandes conjuntos de dados de contatos armazenados em arquivos CSV para o banco de dados do aplicativo, simplificando o processo de gerenciamento de contatos.
+
+### `contact_exist(conn, contact,_id)`
+
+A função `contact_exists` verifica se um determinado contato com o ID fornecido existe na tabela `contacts` do banco de dados SQLite do Contact Manager. Ela retorna `True` se o contato existir e `False` caso contrário.
+
+```python
+def contact_exists(conn, contact_id):
+    sql = 'SELECT 1 FROM contacts WHERE id = ?'
+    cur = conn.cursor()
+    cur.execute(sql, (contact_id,))
+    return cur.fetchone() is not None
+```
+### Explicação
+
+- `sql = 'SELECT 1 FROM contacts WHERE id = ?'`: Define um comando SQL de consulta que seleciona apenas um valor (`1`) da tabela `contacts` onde o `id` corresponde ao `contact_id` fornecido.
+
+- `cur = conn.cursor()`: Cria um cursor a partir da conexão fornecida (`conn`). O cursor é utilizado para executar comandos SQL no banco de dados.
+
+- `cur.execute(sql, (contact_id,))`: Executa o comando SQL de consulta, passando o `contact_id` como parâmetro. O `contact_id` é fornecido como uma tupla `(contact_id,)`, conforme necessário pela função `execute`.
+
+- `cur.fetchone() is not None`: Recupera o primeiro resultado da consulta utilizando o método `fetchone()` do cursor. Se houver algum resultado, o contato existe na tabela `contacts` e a função retorna `True`. Caso contrário, a função retorna `False`.
+
+### Exemplo de Uso
+
+```python
+contact_id = 1
+if contact_exists(conn, contact_id):
+    print(f"O contato com ID {contact_id} existe.")
+else:
+    print(f"O contato com ID {contact_id} não existe.")
+```
+Este exemplo verifica se o contato com o ID `1` existe na tabela `contacts` usando a função `contact_exists` e imprime uma mensagem correspondente. A função `contact_exists` é útil para verificar a existência de um contato antes de realizar operações de atualização ou exclusão, garantindo que apenas contatos válidos sejam afetados.
 
 
