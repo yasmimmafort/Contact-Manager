@@ -69,7 +69,7 @@ import_from_csv('contacts.csv')
 O Contact Manager também oferece um menu interativo para gerenciar os contatos. Para utilizá-lo, basta executar o script `main.py` e seguir as instruções no terminal.
 
 ## Estrutura do Código
-### `create_connection()`
+## `create_connection()`
 
 A função `create_connection` é responsável por estabelecer uma conexão com o banco de dados SQLite chamado contacts.db. Esta conexão é fundamental para a execução de todas as operações subsequentes no banco de dados, como criar tabelas, adicionar, visualizar, atualizar e excluir contatos.
 
@@ -82,7 +82,7 @@ def create_connection():
         print(e)
     return conn
 ```
-# Explicação
+## Explicação
 
 - `conn = None`: Inicializa a variável `conn` como `None`. Esta variável irá armazenar a conexão com o banco de dados se a conexão for bem-sucedida.
   
@@ -392,7 +392,7 @@ def import_from_csv(filename):
 
 - `name = row['Name']`, `email = row['Email']`, `phone = row['Phone']`, `address = row['Address']`: Extrai os valores de cada coluna do dicionário para as variáveis correspondentes.
 
-- As verificações `if ' ' not in name`, `if not (name and email and phone and address)`, `if not is_valid_email(email)`, `if not is_valid_phone(phone)`: Validam os dados de cada linha do CSV. Se os dados não atenderem aos critérios especificados, a linha será pulada e uma mensagem de aviso será pulada e uma mensagem de aviso será exibida.
+- As verificações `if ' ' not in name`, `if not (name and email and phone and address)`, `if not is_valid_email(email)`, `if not is_valid_phone(phone)`: Validam os dados de cada linha do CSV. Se os dados não atenderem aos critérios especificados, a linha será pulada e uma mensagem de aviso será exibida.
 
 - `contact = (name, email, phone, address)`: Cria uma tupla contendo os dados do contato para serem adicionados ao banco de dados.
 
