@@ -2,6 +2,72 @@
 ## Descrição
 O **Contact Manager** é um aplicativo em Python que permite gerenciar contatos de forma eficiente. Ele oferece funcionalidades para adicionar, editar, excluir e visualizar informações de contato, como nome, telefone, e-mail e endereço. Além disso, suporta a importação de contatos a partir de um arquivo CSV.
 
+# Instalação
+
+## Requisitos
+
+- Python (versão 3.7 ou superior)
+- pip
+
+# Passos para Instalação
+
+1. Clone o repositório para sua máquina local:
+```sh
+git clone https://github.com/seu-usuario/contact-manager.git
+```
+2. Navegue até o diretório do projeto:
+```sh
+cd contact-manager
+```
+3. Crie um ambiente virtual (opcional, mas recomendado):
+```sh
+python -m venv venv
+source venv/bin/activate   # No Windows, use `venv\Scripts\activate`
+```
+# Uso
+
+## Executando o projeto
+
+Para iniciar o Contact Manager, execute o seguinte comando:
+
+```sh
+python main.py
+```
+## Exemplo de Uso
+
+```python
+import sqlite3
+from contact_manager import create_connection, add_contact, view_contacts
+
+conn = create_connection()
+
+# Adicionando um novo contato
+contact = ("John Doe", "john.doe@example.com", "+123456789", "123 Main St")
+add_contact(conn, contact)
+
+# Visualizando todos os contatos
+view_contacts(conn)
+
+conn.close()
+```
+## Importando Contatos de um Arquivo CSV
+
+Para importar contatos de um arquivo CSV, certifique-se de que o arquivo siga o formato abaixo:
+
+```csv
+Name,Email,Phone,Address
+John Doe,john.doe@example.com,+123456789,123 Main St
+```
+Depois, execute o seguinte comando dentro do script principal:
+
+```python
+import_from_csv('contacts.csv')
+```
+
+## Menu Interativo
+
+O Contact Manager também oferece um menu interativo para gerenciar os contatos. Para utilizá-lo, basta executar o script `main.py` e seguir as instruções no terminal.
+
 ## Estrutura do Código
 ### `create_connection()`
 
@@ -16,7 +82,7 @@ def create_connection():
         print(e)
     return conn
 ```
-### Explicação
+# Explicação
 
 - `conn = None`: Inicializa a variável `conn` como `None`. Esta variável irá armazenar a conexão com o banco de dados se a conexão for bem-sucedida.
   
@@ -29,7 +95,7 @@ def create_connection():
 Esta função é fundamental para a operação do Contact Manager, pois todas as interações com o banco de dados dependem de uma conexão ativa. Se a conexão não puder ser estabelecida, as operações no banco de dados falharão.
 
 
-### `create_table(conn)`
+## `create_table(conn)`
 
 A função `create_table` é responsável por criar a tabela `contacts` no banco de dados SQLite. Esta tabela armazena as informações dos contatos, como nome, e-mail, telefone e endereço. A função garante que a tabela seja criada apenas se ainda não existir.
 
@@ -71,7 +137,7 @@ def create_table(conn):
 
 Esta função é fundamental para a configuração inicial do banco de dados do Contact Manager, garantindo que a estrutura da tabela esteja correta e pronta para armazenar os dados dos contatos.
 
-### `add_contatact(conn, contact)`
+## `add_contatact(conn, contact)`
 
 A função `add_contact` é responsável por adicionar um novo contato à tabela `contacts` no banco de dados SQLite. Ela insere os dados fornecidos (nome, e-mail, telefone e endereço) na tabela e retorna o ID do contato recém-adicionado.
 
@@ -110,7 +176,7 @@ print(f"Contato adicionado com ID: {contact_id}")
 
 Esta função é fundamental para adicionar novos contatos ao banco de dados do Contact Manager, permitindo que o usuário armazene informações detalhadas sobre cada contato.
 
-### `view_contacts(conn)`
+## `view_contacts(conn)`
 
 A função `view_contacts` é responsável por recuperar e exibir todos os contatos armazenados na tabela `contacts` no banco de dados SQLite. Ela seleciona todos os registros da tabela e imprime cada um deles.
 
@@ -151,7 +217,7 @@ A saída pode ser algo como:
 ```
 Esta função é fundamental para visualizar todos os contatos armazenados no banco de dados do Contact Manager, permitindo que o usuário veja facilmente todas as informações dos contatos.
 
-### `update_contact(conn, contact_id, fields)`
+## `update_contact(conn, contact_id, fields)`
 
 A função `update_contact` é responsável por atualizar as informações de um contato existente na tabela `contacts` no banco de dados SQLite. Ela permite que campos específicos de um contato sejam modificados com novos valores fornecidos.
 
@@ -193,7 +259,7 @@ Este exemplo atualiza o contato com `id` 1, modificando seu nome, e-mail, telefo
 
 A função `update_contact` é essencial para permitir a edição de informações de contatos já existentes no banco de dados do Contact Manager, proporcionando flexibilidade na manutenção dos dados.
 
-### `delete_contact(conn, id)`
+## `delete_contact(conn, id)`
 
 A função delete_contact é responsável por excluir um contato específico da tabela contacts no banco de dados SQLite. Ela remove o registro correspondente ao id fornecido.
 
@@ -226,7 +292,7 @@ Este exemplo exclui o contato com o `id` 1 da tabela `contacts`. Após a execuç
 
 A função `delete_contact` é crucial para permitir a remoção de contatos indesejados ou obsoletos do banco de dados do Contact Manager, ajudando a manter a integridade e a organização dos dados.
 
-### `is_valid_email(email)`
+## `is_valid_email(email)`
 
 A função `is_valid_email` verifica se um determinado e-mail possui um formato válido, seguindo um padrão específico. Ela utiliza expressões regulares para validar o formato do e-mail.
 
@@ -254,7 +320,7 @@ Este exemplo verifica se o e-mail `"example@example.com"` é válido usando a fu
 
 A função `is_valid_email` é útil para validar endereços de e-mail fornecidos pelo usuário antes de serem inseridos no banco de dados do Contact Manager, ajudando a garantir a integridade e a validade dos dados.
 
-### `is_valid_phone(phone)`
+## `is_valid_phone(phone)`
 
 A função `is_valid_phone` verifica se um determinado número de telefone possui um formato válido, seguindo um padrão específico. Ela utiliza expressões regulares para validar o formato do número de telefone.
 
@@ -278,7 +344,7 @@ Este exemplo verifica se o número de telefone `"+1234567890"` é válido usando
 
 A função `is_valid_phone` é útil para validar números de telefone fornecidos pelo usuário antes de serem inseridos no banco de dados do Contact Manager, ajudando a garantir a integridade e a validade dos dados.
 
-### `import_from_csv(filename)`
+## `import_from_csv(filename)`
 
 A função `import_from_csv` permite importar dados de um arquivo CSV para o banco de dados SQLite do Contact Manager. Ela lê o arquivo CSV fornecido, valida os dados de cada linha e os insere na tabela contacts do banco de dados.
 
@@ -346,7 +412,7 @@ Este exemplo importa dados do arquivo CSV `'contatos.csv'` para o banco de dados
 
 A função `import_from_csv` é fundamental para permitir a importação de grandes conjuntos de dados de contatos armazenados em arquivos CSV para o banco de dados do aplicativo, simplificando o processo de gerenciamento de contatos.
 
-### `contact_exist(conn, contact,_id)`
+## `contact_exist(conn, contact,_id)`
 
 A função `contact_exists` verifica se um determinado contato com o ID fornecido existe na tabela `contacts` do banco de dados SQLite do Contact Manager. Ela retorna `True` se o contato existir e `False` caso contrário.
 
@@ -378,4 +444,113 @@ else:
 ```
 Este exemplo verifica se o contato com o ID `1` existe na tabela `contacts` usando a função `contact_exists` e imprime uma mensagem correspondente. A função `contact_exists` é útil para verificar a existência de um contato antes de realizar operações de atualização ou exclusão, garantindo que apenas contatos válidos sejam afetados.
 
+## `get_validated_input(prompt, validation_func=None)`
+
+A função `get_validated_input` solicita uma entrada do usuário, exibe um prompt (`prompt`) e valida essa entrada de acordo com uma função de validação especificada (`validation_func`). Se a entrada do usuário passar na validação, ela é retornada. Caso contrário, uma mensagem de erro é exibida e o usuário é solicitado a fornecer uma entrada válida.
+
+```python
+def get_validated_input(prompt, validation_func=None):
+    while True:
+        user_input = input(prompt)
+        if validation_func:
+            if validation_func(user_input):
+                return user_input
+            else:
+                print("Entrada inválida. Tente novamente.")
+        else:
+            return user_input
+```
+
+### Explicação
+
+- `prompt`: É uma string que contém uma mensagem ou instrução para solicitar a entrada do usuário.
+
+- `validation_func=None`: É uma função opcional de validação que verifica se a entrada do usuário é válida. Se fornecida, esta função é chamada com a entrada do usuário como argumento.
+
+- `while True:`: Inicia um loop infinito para solicitar entrada do usuário até que uma entrada válida seja fornecida.
+
+- `user_input = input(prompt)`: Exibe o prompt para o usuário e espera que ele forneça uma entrada, que é armazenada na variável `user_input`.
+
+- `if validation_func:`: Verifica se uma função de validação foi fornecida.
+    
+    - `if validation_func(user_input):`: Chama a função de validação (`validation_func`) com a entrada do usuário como argumento. Se a função de validação retornar `True`, indica que a entrada do usuário é válida e ela é retornada pela função `get_validated_input`.
+ 
+    - `else:`: Se a entrada do usuário não for válida de acordo com a função de validação, uma mensagem de erro é exibida e o loop continua, solicitando novamente uma entrada válida.
+
+- `else:`: Se nenhuma função de validação foi fornecida, a entrada do usuário é retornada imediatamente pela função `get_validated_input`.
+
+### Exemplo de Uso
+
+```python
+name = get_validated_input("Nome: ", lambda x: len(x) > 0)
+```
+Neste exemplo, a função `get_validated_input` é usada para solicitar o nome do usuário. A função de validação fornecida (`lambda x: len(x) > 0`) verifica se o comprimento da entrada do usuário é maior que zero, garantindo que o usuário forneça um nome válido.
+
+A função `get_validated_input` é útil para solicitar entradas do usuário em várias partes do aplicativo, garantindo que essas entradas atendam aos critérios de validação especificados.
+
+## `main()`
+
+A função `main()` é a função principal do aplicativo Contact Manager. Ela controla o fluxo de execução do programa, exibindo um menu de opções para o usuário e coordenando as ações correspondentes a cada opção escolhida.
+
+```python
+def main():
+    database = 'contacts.db'
+    conn = create_connection()
+
+    while True:
+        print("\nMenu:")
+        print("1. Adicionar Contato")
+        print("2. Visualizar Contatos")
+        print("3. Atualizar Contato")
+        print("4. Deletar Contato")
+        print("5. Sair")
+        choice = get_validated_input("Escolha uma opção: ", lambda x: x in {'1', '2', '3', '4', '5'})
+
+        if choice == '1':
+            # Adicionar um novo contato
+        elif choice == '2':
+            # Visualizar contatos existentes
+        elif choice == '3':
+            # Atualizar um contato existente
+        elif choice == '4':
+            # Deletar um contato existente
+        elif choice == '5':
+            # Sair do programa
+            conn.close()
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+```
+
+### Explicação
+
+- `database = 'contacts.db'`: Define o nome do banco de dados SQLite que será utilizado pelo aplicativo Contact Manager.
+
+- `conn = create_connection()`: Cria uma conexão com o banco de dados utilizando a função `create_connection()`.
+
+- `while True:`: Inicia um loop infinito que continua até que o usuário escolha a opção de sair (`'5'`).
+
+- `print("\nMenu:")`: Exibe o menu de opções para o usuário.
+
+- `choice = get_validated_input("Escolha uma opção: ", lambda x: x in {'1', '2', '3', '4', '5'})`: Solicita ao usuário que escolha uma opção do menu e valida a entrada do usuário para garantir que seja uma das opções válidas (`'1'`, `'2'`, `'3'`, `'4'` ou `'5'`).
+
+- O bloco `if-elif-else` verifica a escolha do usuário e executa a ação correspondente a cada opção selecionada.
+
+- `if choice == '1':`, `elif choice == '2':`, `elif choice == '3':`, `elif choice == '4':`, `elif choice == '5':`: Cada bloco verifica a escolha do usuário e chama a função apropriada para realizar a ação desejada.
+
+- O bloco `else:` é acionado se o usuário inserir uma opção inválida e exibe uma mensagem de erro.
+
+- `conn.close()`: Fecha a conexão com o banco de dados quando o usuário escolhe sair do programa.
+
+### Exemplo de Uso
+
+```python
+if __name__ == '__main__':
+    import_from_csv('contacts_with_errors.csv')
+    main()
+```
+
+Este exemplo importa dados do arquivo CSV `'contacts_with_errors.csv'` para o banco de dados e, em seguida, inicia a função `main()`, permitindo que o usuário interaja com o aplicativo.
+
+“A função `main()` é o ponto de entrada principal do aplicativo Contact Manager, coordenando todas as operações de gerenciamento de contatos.”
 
