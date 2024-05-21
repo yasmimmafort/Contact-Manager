@@ -324,6 +324,12 @@ A função `is_valid_email` é útil para validar endereços de e-mail fornecido
 
 A função `is_valid_phone` verifica se um determinado número de telefone possui um formato válido, seguindo um padrão específico. Ela utiliza expressões regulares para validar o formato do número de telefone.
 
+```python
+def is_valid_phone(phone):
+    pattern = r'^[\d\+\-\(\) ]+$'
+    return re.match(pattern, phone)
+```
+
 ### Explicação
 
 - `pattern = r'^[\d\+\-\(\) ]+$'`: Define um padrão de expressão regular que corresponde a um número de telefone válido. Este padrão verifica se o número de telefone contém apenas dígitos (`\d`), sinais de adição (`+`), traços (`-`), parênteses (`(` e `)`) e espaços (` `).
