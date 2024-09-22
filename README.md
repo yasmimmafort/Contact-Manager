@@ -13,7 +13,7 @@ O **Contact Manager** é um aplicativo em Python que permite gerenciar contatos 
 
 1. Clone o repositório para sua máquina local:
 ```sh
-git clone https://github.com/seu-usuario/contact-manager.git
+git clone https://github.com/yasmimmafort/contact-manager.git
 ```
 2. Navegue até o diretório do projeto:
 ```sh
